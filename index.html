@@ -1,0 +1,24 @@
+<!-- Header snippet: drop this into your pages (place at top of <body>) -->
+<nav class="site-navbar" role="navigation" aria-label="Main navigation" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:12px 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+  <div style="max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;">
+    <div style="font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px;">🛍️ <span>ShopZone</span></div>
+    <div style="display:flex;gap:18px;align-items:center;">
+      <a class="site-link" style="color:inherit;text-decoration:none;cursor:pointer;font-weight:600;" onclick="showPage && showPage('shop')">Shop</a>
+      <a class="site-link" style="color:inherit;text-decoration:none;cursor:pointer;font-weight:600;" onclick="showPage && showPage('cart')">🛒 Cart <span id="cartCount" style="background:#f56565;border-radius:50%;padding:2px 8px;font-size:12px;font-weight:700;margin-left:6px;">0</span></a>
+      <a id="authLink" style="color:inherit;text-decoration:none;cursor:pointer;font-weight:600;" onclick="logout && logout()">Logout</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  // Small helpers to integrate with existing site code
+  function setHeaderCartCount(n){ const el=document.getElementById('cartCount'); if(el) el.textContent = Number(n||0); }
+  function setAuthText(text){ const a=document.getElementById('authLink'); if(a) a.textContent = text; }
+  window.addEventListener('load', ()=>{
+    try{
+      if(typeof cart !== 'undefined') setHeaderCartCount(cart.reduce((s,i)=>s+(i.quantity||0),0));
+      const user = localStorage.getItem('currentUser');
+      setAuthText(user ? 'Logout' : 'Login');
+    }catch(e){/* ignore */}
+  });
+</script>
