@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ShopZone - Main Page</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Segoe UI,Arial,sans-serif;background:#f5f7fa}
+    .navbar{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:12px 0;position:sticky;top:0;z-index:100}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center}
+    .logo{font-weight:700;display:flex;gap:8px;align-items:center}
+    .nav-links{display:flex;gap:16px;align-items:center}
+    .cart-badge{background:#f56565;border-radius:50%;padding:2px 8px;font-size:12px;font-weight:700;margin-left:6px}
+    .container{max-width:1200px;margin:30px auto;padding:0 20px}
+    .section-title{text-align:center;font-size:28px;color:#2d3748;margin-bottom:20px}
+    .filters{display:flex;gap:12px;justify-content:center;margin-bottom:18px}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+    .card{background:#fff;padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,.06);}
+    .product-image{height:160px;display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,#667eea20 0%,#764ba220 100%);border-radius:8px;margin-bottom:12px}
+    .product-name{font-weight:600;color:#2d3748;margin-bottom:6px}
+    .product-desc{color:#718096;font-size:13px;margin-bottom:10px}
+    .product-footer{display:flex;justify-content:space-between;align-items:center}
+    .btn{padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
+    .btn-primary{background:#667eea;color:#fff}
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-inner">
+      <div class="logo">🛍️ <span>ShopZone</span></div>
+      <nav class="nav-links">
+        <a onclick="showPage && showPage('shop')" style="color:inherit;cursor:pointer">Shop</a>
+        <a onclick="showPage && showPage('cart')" style="color:inherit;cursor:pointer">🛒 Cart <span id="cartCount" class="cart-badge">0</span></a>
+        <a id="authLink" onclick="logout && logout()" style="color:inherit;cursor:pointer">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="section-title">Discover Amazing Products</h1>
+    <div class="filters">
+      <select id="categoryFilter" onchange="renderProducts()">
+        <option value="all">All Categories</option>
+        <option value="electronics">Electronics</option>
+        <option value="clothing">Clothing</option>
+        <option value="home">Home & Garden</option>
+        <option value="sports">Sports</option>
+      </select>
+      <input id="searchInput" placeholder="Search products..." oninput="renderProducts()" style="padding:8px;border-radius:8px;border:1px solid #e2e8f0" />
+    </div>
+
+    <div id="productsGrid" class="products-grid"></div>
+  </main>
+
+  <script>
+    const products = [
+      {id:1,name:'Wireless Headphones',price:89.99,category:'electronics',icon:'🎧',description:'Premium sound'},
+      {id:2,name:'Smart Watch',price:199.99,category:'electronics',icon:'⌚',description:'Track fitness'},
+      {id:3,name:'Laptop Backpack',price:49.99,category:'clothing',icon:'🎒',description:'Durable and spacious'},
+      {id:4,name:'Coffee Maker',price:79.99,category:'home',icon:'☕',description:'Brew great coffee'},
+      {id:5,name:'Running Shoes',price:129.99,category:'sports',icon:'👟',description:'Lightweight and comfy'}
+    ];
+    let cart = [];
+    function renderProducts(){
+      const grid=document.getElementById('productsGrid');
+      const category=document.getElementById('categoryFilter').value;
+      const search=(document.getElementById('searchInput').value||'').toLowerCase();
+      const filtered=products.filter(p=> (category==='all'||p.category===category) && (p.name.toLowerCase().includes(search)||p.description.toLowerCase().includes(search)) );
+      grid.innerHTML = filtered.map(p=>`<div class="card"><div class="product-image">${p.icon}</div><div class="product-name">${p.name}</div><div class="product-desc">${p.description}</div><div class="product-footer"><div class="price">$${p.price.toFixed(2)}</div><button class="btn btn-primary" onclick="addToCart(${p.id})">Add</button></div></div>`).join('');
+    }
+    function addToCart(id){ const p=products.find(x=>x.id===id); const e=cart.find(x=>x.id===id); if(e) e.quantity++; else cart.push({...p,quantity:1}); document.getElementById('cartCount').textContent = cart.reduce((s,i)=>s+i.quantity,0); alert('Added to cart'); }
+    window.addEventListener('load', ()=>{ renderProducts(); });
+  </script>
+</body>
+</html>
